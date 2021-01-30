@@ -1,0 +1,18 @@
+<h2>DAGS</h2>
+<button phx-click="start">Start</button>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>State</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for dag <- @dags do %>
+    <tr>
+      <td><%= dag.name %></td>
+      <td><span class=<%= dag.state %>></span></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
