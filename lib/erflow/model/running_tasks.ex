@@ -1,4 +1,4 @@
-defmodule Erflow.Core.RunningTask do
+defmodule Erflow.Model.RunningTask do
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -9,8 +9,8 @@ defmodule Erflow.Core.RunningTask do
     field :start_time, :utc_datetime
     field :end_time, :utc_datetime
     field :status, :string
-    belongs_to :job, Erflow.Core.Job, references: :job_id, type: :binary_id, foreign_key: :job_id
-    belongs_to :task, Erflow.Core.Task, references: :task_id, type: :binary_id, foreign_key: :task_id
+    belongs_to :job, Erflow.Model.Job, references: :job_id, type: :binary_id, foreign_key: :job_id
+    belongs_to :task, Erflow.Model.Task, references: :task_id, type: :binary_id, foreign_key: :task_id
   end
 
   @doc false

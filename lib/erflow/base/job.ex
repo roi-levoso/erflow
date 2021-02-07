@@ -1,5 +1,5 @@
-defmodule Erflow.Dag.BaseJob do
-  alias Erflow.Dag.BaseDag
+defmodule Erflow.Base.Job do
+  alias Erflow.Base.Dag, as: BaseDag
   @callback build() :: {:ok, %BaseDag{}} | {:error, String.t}
 
   def build!(implementation, contents) do

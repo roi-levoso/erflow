@@ -1,7 +1,7 @@
 defmodule Scheduler.JobSupervisor do
   # Automatically defines child_spec/1
   use DynamicSupervisor
-  alias Erflow.Core.Job
+  alias Erflow.Model.Job
 
   def start_link(init_arg) do
     DynamicSupervisor.start_link(__MODULE__, init_arg, name: __MODULE__)

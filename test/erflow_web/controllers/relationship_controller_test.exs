@@ -1,8 +1,8 @@
 defmodule ErflowWeb.RelationshipControllerTest do
   use ErflowWeb.ConnCase
 
-  alias Erflow.Core
-  alias Erflow.Core.Relationship
+  alias Erflow.Model
+  alias Erflow.Model.Relationship
 
   @create_attrs %{
 
@@ -13,7 +13,7 @@ defmodule ErflowWeb.RelationshipControllerTest do
   @invalid_attrs %{}
 
   def fixture(:relationship) do
-    {:ok, relationship} = Core.create_relationship(@create_attrs)
+    {:ok, relationship} = Model.create_relationship(@create_attrs)
     relationship
   end
 

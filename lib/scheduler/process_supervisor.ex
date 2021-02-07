@@ -1,7 +1,7 @@
 defmodule Scheduler.ProcessSupervisor do
   # Automatically defines child_spec/1
   use Supervisor
-  alias Erflow.Core.Job
+  alias Erflow.Model.Job
 
   defstruct [:dag, :runner, :name]
 

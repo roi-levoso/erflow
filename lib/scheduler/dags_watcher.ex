@@ -1,5 +1,6 @@
 defmodule Scheduler.DagsWatcher do
   use GenServer
+  alias Erflow.Base.Dag, as: BaseDag
   # TODO pass this variable through configuration
   @dags_dir  "/Users/roi.fernandez/Courses/Elixir/erflow/dags"
   def start_link(opts \\ %{}) do
@@ -71,9 +72,9 @@ defmodule Scheduler.DagsWatcher do
     # TODO Consider using hash to control this update. It save resources
     # TODO Remove tasks not contained in the dag when updated
     # TODO refactor to update tasks within a transaction
-    Erflow.Core.create_dag(%{name: base_dag.name, schedule: base_dag.schedule})
+    Erflow.Model.create_dag(%{name: base_dag.name, schedule: base_dag.schedule})
     |> case do
-      {:ok, dag} -> Erflow.Dag.BaseDag.get_tasks(base_dag)
+      {:ok, dag} -> BaseDag.get_tasks(base_dag)
       |> Enum.map(fn task -> upsert_task(task, dag.dag_id) end)
       |> upsert_relations(base_dag)
       {:error,_error} -> raise "Error"
@@ -81,7 +82,7 @@ defmodule Scheduler.DagsWatcher do
     base_dag
   end
   defp upsert_task(task, dag_id) do
-    Erflow.Core.create_task(%{name: task.name,
+    Erflow.Model.create_task(%{name: task.name,
      mod: task.mod,
     fun: task.fun,
     args: task.args,
@@ -98,20 +99,20 @@ defmodule Scheduler.DagsWatcher do
 
   end
   defp remove_relations(created_task) do
-    Erflow.Core.get_all_relations_by_task_id(created_task.db_task.task_id)
-    |> Enum.each(&Erflow.Core.delete_tasks_tasks/1)
+    Erflow.Model.get_all_relations_by_task_id(created_task.db_task.task_id)
+    |> Enum.each(&Erflow.Model.delete_tasks_tasks/1)
     created_task
   end
   defp upsert_relation(created_task, db_tasks, base_dag) do
-    with %{parent: graph_parent, child: graph_child} <- Erflow.Dag.BaseDag.get_relations(base_dag, created_task.graph_task),
+    with %{parent: graph_parent, child: graph_child} <- BaseDag.get_relations(base_dag, created_task.graph_task),
     %{parent: db_parent_ids, child: db_child_ids} <- get_relation_ids(%{parent: graph_parent, child: graph_child}, db_tasks)
     do
 
       db_child_ids
-      |> Enum.each(fn child -> Erflow.Core.create_tasks_tasks(%{child_id: child, parent_id: created_task.db_task.task_id}) end)
+      |> Enum.each(fn child -> Erflow.Model.create_tasks_tasks(%{child_id: child, parent_id: created_task.db_task.task_id}) end)
 
       db_parent_ids
-      |> Enum.each(fn parent -> Erflow.Core.create_tasks_tasks(%{parent_id: parent, child_id: created_task.db_task.task_id}) end)
+      |> Enum.each(fn parent -> Erflow.Model.create_tasks_tasks(%{parent_id: parent, child_id: created_task.db_task.task_id}) end)
 
     end
   end

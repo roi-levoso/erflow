@@ -1,4 +1,4 @@
-defmodule Erflow.Core.Job do
+defmodule Erflow.Model.Job do
   use Ecto.Schema
   import Ecto.Changeset
 
@@ -11,8 +11,8 @@ defmodule Erflow.Core.Job do
     field :scheduled_time, :utc_datetime
     field :start_time, :utc_datetime
     field :status, :string
-    has_many :running_tasks, Erflow.Core.RunningTask, on_replace: :delete
-    belongs_to :dag, Erflow.Core.Dag, references: :dag_id, type: :binary_id, foreign_key: :dag_id
+    has_many :running_tasks, Erflow.Model.RunningTask, on_replace: :delete
+    belongs_to :dag, Erflow.Model.Dag, references: :dag_id, type: :binary_id, foreign_key: :dag_id
 
     timestamps()
   end

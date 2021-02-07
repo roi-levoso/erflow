@@ -1,4 +1,4 @@
-defmodule Erflow.Core.Dag do
+defmodule Erflow.Model.Dag do
   use Ecto.Schema
   import Ecto.Changeset
   # TODO Think about dag versioning
@@ -11,8 +11,8 @@ defmodule Erflow.Core.Dag do
     field :enabled, :boolean
     field :schedule, :string
     field :owner, :string
-    has_many :jobs, Erflow.Core.Job,  foreign_key: :job_id
-    has_many :tasks, Erflow.Core.Task,  foreign_key: :task_id
+    has_many :jobs, Erflow.Model.Job,  foreign_key: :job_id
+    has_many :tasks, Erflow.Model.Task,  foreign_key: :task_id
 
     timestamps()
   end

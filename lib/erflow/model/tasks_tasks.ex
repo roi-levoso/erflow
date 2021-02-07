@@ -1,12 +1,12 @@
-defmodule Erflow.Core.TasksTasks do
+defmodule Erflow.Model.TasksTasks do
   use Ecto.Schema
   import Ecto.Changeset
 
 
   @primary_key false
   schema "tasks_tasks" do
-    belongs_to :parent, Erflow.Core.Task, references: :task_id, type: :binary_id, foreign_key: :parent_id, primary_key: true
-    belongs_to :child, Erflow.Core.Task, references: :task_id, type: :binary_id, foreign_key: :child_id, primary_key: true
+    belongs_to :parent, Erflow.Model.Task, references: :task_id, type: :binary_id, foreign_key: :parent_id, primary_key: true
+    belongs_to :child, Erflow.Model.Task, references: :task_id, type: :binary_id, foreign_key: :child_id, primary_key: true
   end
 
   @doc false

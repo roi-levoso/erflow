@@ -1,14 +1,14 @@
-defmodule Erflow.Core do
+defmodule Erflow.Model do
   @moduledoc """
-  The Core context.
+  The Model context.
   """
 
   import Ecto.Query, warn: false
   alias Erflow.Repo
 
-  alias Erflow.Core.Dag
-  alias Erflow.Core.Job
-  alias Erflow.Core.Task
+  alias Erflow.Model.Dag
+  alias Erflow.Model.Job
+  alias Erflow.Model.Task
 
 
     @doc """
@@ -367,7 +367,7 @@ defmodule Erflow.Core do
     Task.changeset(task, attrs)
   end
 
-  alias Erflow.Core.TasksTasks
+  alias Erflow.Model.TasksTasks
 
   @doc """
   Returns the list of tasks_taskss.
@@ -479,7 +479,7 @@ defmodule Erflow.Core do
     TasksTasks.changeset(tasks_tasks, attrs)
   end
 
-  alias Erflow.Core.RunningTask
+  alias Erflow.Model.RunningTask
 
   @doc """
   Returns the list of running_tasks.

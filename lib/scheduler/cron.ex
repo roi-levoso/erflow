@@ -1,7 +1,7 @@
 defmodule Scheduler.Cron do
   use GenServer
-  alias Erflow.Core.Dag
-  alias Erflow.Core.Job
+  alias Erflow.Model.Dag
+  alias Erflow.Model.Job
 
 
   def start_link(default) when is_list(default) do
@@ -12,7 +12,7 @@ defmodule Scheduler.Cron do
   def init(_args) do
     # TODO Decide if all dags are loaded or only the ones existing in folder
     # # Get all the dags
-    # dags = Erflow.Core.list_dags()
+    # dags = Erflow.Model.list_dags()
 
     # # Get next schedule time jobs and pass them as state
     # next_schedules = dags
@@ -20,7 +20,7 @@ defmodule Scheduler.Cron do
     # #TODO Implement backfill
 
     # # Start running jobs
-    Erflow.Core.list_running_jobs
+    Erflow.Model.list_running_jobs
     |> Enum.each(&run_job/1)
     # |> Enum.filter(fn job -> job.dag.enabled end)
     # # Start cron loop
@@ -39,7 +39,7 @@ defmodule Scheduler.Cron do
 
   defp create_job(%{} = job) do
     new_job = Map.put(job, :start_time, DateTime.utc_now())
-    with {:ok, created_job} <- Erflow.Core.create_job(new_job) do
+    with {:ok, created_job} <- Erflow.Model.create_job(new_job) do
       run_job(created_job)
       created_job
     else
@@ -106,7 +106,7 @@ defmodule Scheduler.Cron do
   end
 
   defp new_schedule(job) do
-    Erflow.Core.get_dag!(job.dag_id)
+    Erflow.Model.get_dag!(job.dag_id)
     |> get_next_job()
   end
 
@@ -117,7 +117,7 @@ defmodule Scheduler.Cron do
   @impl true
   def handle_cast({:update_dag, dag_name}, scheduled_jobs) do
     new_scheduled_jobs =
-    with {:ok, dag} <- Erflow.Core.get_dag_by_name(dag_name)
+    with {:ok, dag} <- Erflow.Model.get_dag_by_name(dag_name)
     do
       case dag.schedule do
         nil -> scheduled_jobs

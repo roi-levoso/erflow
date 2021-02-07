@@ -1,4 +1,4 @@
-defmodule Erflow.Dag.BaseTask do
+defmodule Erflow.Base.Task do
   defstruct [:name, :mod, :fun, :args]
   require Logger
   @type t() :: %__MODULE__{

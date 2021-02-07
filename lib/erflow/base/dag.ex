@@ -1,5 +1,5 @@
-defmodule Erflow.Dag.BaseDag do
-  alias Erflow.Dag.BaseTask
+defmodule Erflow.Base.Dag do
+  alias Erflow.Base.Task, as: BaseTask
   defstruct [:name, :schedule, :graph]
 
   def new(%{name: name, schedule: schedule}, tasks) do

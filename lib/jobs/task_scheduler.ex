@@ -1,6 +1,6 @@
 defmodule Jobs.TaskScheduler do
   use GenServer
-  alias Erflow.Core.Job
+  alias Erflow.Model.Job
 
   defstruct [:job, :runner]
 
@@ -20,12 +20,12 @@ defmodule Jobs.TaskScheduler do
   @spec init(%{job: any, runner: any}) :: {:ok, Job.TaskScheduler.t()}
   def init(%{job: job, runner: runner}) do
 
-    tasks = Erflow.Core.get_tasks_by_dag(job.dag_id)
+    tasks = Erflow.Model.get_tasks_by_dag(job.dag_id)
 
     tasks
-    |> Enum.map(fn task -> Erflow.Core.create_running_task(%{job_id: job.job_id, task_id: task.task_id}) end)
+    |> Enum.map(fn task -> Erflow.Model.create_running_task(%{job_id: job.job_id, task_id: task.task_id}) end)
 
-    running_tasks= Erflow.Core.get_running_tasks_by_job(job.job_id)
+    running_tasks= Erflow.Model.get_running_tasks_by_job(job.job_id)
 
     running_tasks
     |> Enum.filter(fn running_task -> running_task.status=="running" end)
@@ -87,12 +87,12 @@ defmodule Jobs.TaskScheduler do
   @impl true
   def handle_info(:work, %{job: job, runner: runner} = state) do
 
-    tasks = Erflow.Core.get_tasks_by_dag(job.dag_id)
+    tasks = Erflow.Model.get_tasks_by_dag(job.dag_id)
     # QUESTION Is it necessary to update running_jobs every loop step or only on init?
     tasks
-    |> Enum.map(fn task -> Erflow.Core.create_running_task(%{job_id: job.job_id, task_id: task.task_id}) end)
+    |> Enum.map(fn task -> Erflow.Model.create_running_task(%{job_id: job.job_id, task_id: task.task_id}) end)
 
-    running_tasks= Erflow.Core.get_running_tasks_by_job(job.job_id)
+    running_tasks= Erflow.Model.get_running_tasks_by_job(job.job_id)
 
     pid = String.to_atom(job.job_id <> "_supervisor")
           |> Process.whereis()
@@ -111,8 +111,8 @@ defmodule Jobs.TaskScheduler do
   defp update_job_status(running_tasks, job) do
     # TODO if job is failed or done destroy process supervisor
     cond do
-      Enum.filter(running_tasks, fn task -> task.status == "failed" end) != [] -> Erflow.Core.get_job!(job.job_id) |> Erflow.Core.update_job(%{status: "failed"})
-      Enum.filter(running_tasks, fn task -> not (task.status == "done") end) == [] -> Erflow.Core.get_job!(job.job_id) |> Erflow.Core.update_job(%{status: "done"})
+      Enum.filter(running_tasks, fn task -> task.status == "failed" end) != [] -> Erflow.Model.get_job!(job.job_id) |> Erflow.Model.update_job(%{status: "failed"})
+      Enum.filter(running_tasks, fn task -> not (task.status == "done") end) == [] -> Erflow.Model.get_job!(job.job_id) |> Erflow.Model.update_job(%{status: "done"})
       true -> []
     end
 

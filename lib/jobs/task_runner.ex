@@ -1,7 +1,7 @@
 
 defmodule Jobs.TaskRunner do
   use GenServer
-  alias Erflow.Core.Job
+  alias Erflow.Model.Job
 
   def start_link(%Job{} = job) do
     runner = String.to_atom(job.job_id <> "_runner")
@@ -16,8 +16,8 @@ defmodule Jobs.TaskRunner do
 
 
   def handle_cast({:run, running_task}, state) do
-    Erflow.Core.get_running_task_by_job_and_task!(%{job: running_task.job_id, task: running_task.task_id})
-    |> Erflow.Core.update_running_task(%{status: "running"})
+    Erflow.Model.get_running_task_by_job_and_task!(%{job: running_task.job_id, task: running_task.task_id})
+    |> Erflow.Model.update_running_task(%{status: "running"})
     |> run_task(running_task.task.mod, running_task.task.fun, running_task.task.args)
     {:noreply, state}
   end
@@ -38,13 +38,13 @@ defmodule Jobs.TaskRunner do
 
 
   def handle_info({_task, {:ok, running_task}}, state) do
-    Erflow.Core.update_running_task(running_task, %{status: "done"})
+    Erflow.Model.update_running_task(running_task, %{status: "done"})
     IO.puts("Job Done.")
     {:noreply, state}
   end
 
   def handle_info({_task, {:error, running_task}}, state) do
-    Erflow.Core.update_running_task(running_task, %{status: "failed"})
+    Erflow.Model.update_running_task(running_task, %{status: "failed"})
     IO.puts("Failed to completed job")
     {:noreply, state}
   end
