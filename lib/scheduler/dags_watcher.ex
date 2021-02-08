@@ -22,26 +22,22 @@ defmodule Scheduler.DagsWatcher do
   end
 
 
-  def handle_info({:file_event, _watcher_pid, {path, events}}, state) do
-    dag = handle_event({events, path})
-    {:noreply, []}
-  end
-
   # TODO How to deal with duplicate modules?
   # TODO Propagate errors to the web
-  defp handle_event({events, path}) do
+  def handle_info({:file_event, _watcher_pid, {path, events}}, state) do
     case List.last(events) do
       :removed ->
         nil
       :created ->
-        # TODO check if the build dag is correct befor upserting it
+        # TODO check if the build dag is correct before upserting it
         path |> Path.wildcard() |> base_dag_to_model()
       :modified ->
-        # TODO check if the build dag is correct befor upserting it
+        # TODO check if the build dag is correct before upserting it
         path |> Path.wildcard() |> base_dag_to_model()
       _ ->
         nil
     end
+    {:noreply, []}
   end
 
   defp base_dag_to_model(file) do
