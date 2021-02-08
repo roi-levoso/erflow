@@ -2,6 +2,42 @@ defmodule Erflow.Base.Dag do
   alias Erflow.Base.Task, as: BaseTask
   defstruct [:name, :schedule, :graph]
 
+
+
+    ################
+  #Use it directly as with
+  # defp compile(file) do
+  #   case Kernel.ParallelCompiler.compile([file]) do
+  #     {:ok, [module], message} -> {:ok, [module], message}
+  #     {:error, message, _} -> {:error, message}
+  #   end
+  # end
+  #################
+
+  @callback build() :: {:ok, %__MODULE__{}} | {:error, String.t}
+
+  def build!(implementation, contents) do
+    IO.inspect(implementation)
+    case implementation.build(contents) do
+      {:ok, data} -> data
+      {:error, error} -> raise ArgumentError, "Building error: #{error}"
+    end
+  end
+
+
+  def build_dag_from_file(file) do
+    with {:ok, [module], _} <- Kernel.ParallelCompiler.compile([file]),
+          {:ok, base_dag} <- module.build()
+    do
+      {:ok, base_dag}
+    else
+      err -> err
+      IO.inspect(err)
+      nil
+    end
+  end
+
+
   def new(%{name: name, schedule: schedule}, tasks) do
     to_graph(tasks)
     |> is_acyclic(%__MODULE__{name: name, schedule: schedule, graph: nil})

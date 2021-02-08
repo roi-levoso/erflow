@@ -1,8 +1,8 @@
 defmodule TestDag do
-  @behaviour Erflow.Base.Job
+  @behaviour Erflow.Base.Dag
   import Erflow.Base.Dag
 
-  @impl Erflow.Base.Job
+  @impl Erflow.Base.Dag
   def build() do
     t1 = new_task(%{name: "task1", mod: "TestDag", fun: "fun"})
     t2 = new_task(%{name: "task2", mod: "TestDag", fun: "fun"})
@@ -11,7 +11,7 @@ defmodule TestDag do
     t5 = new_task(%{name: "task5", mod: "TestDag", fun: "fun"})
     t6 = new_task(%{name: "task6", mod: "TestDag", fun: "fun"})
 
-    dag = Erflow.Base.Dag.new(%{name: "Test", schedule: "28 * * *"}, []) <|> [t1, t2] ~> t3 ~> [t5, t6] <|> t4
+    dag = Erflow.Base.Dag.new(%{name: "Test", schedule: "27 * * *"}, []) <|> [t1, t2] ~> t3 ~> [t5, t6] <|> t4
     {:ok, dag}
 
   end
