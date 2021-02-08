@@ -50,6 +50,7 @@ defmodule Erflow.MixProject do
       {:crontab, "~> 1.1"},
       {:libgraph, "~>0.13.3"},
       { :file_system, "~> 0.2"},
+      {:credo, "~> 1.4", only: [:dev, :test], runtime: false},
     ]
   end
 
