@@ -47,10 +47,6 @@ defmodule Erflow.Base.Dag do
     |> is_acyclic(%__MODULE__{name: name, graph: nil})
   end
 
-  def new_task(task_definition) do
-    BaseTask.new(task_definition)
-  end
-
   def get_tasks(%__MODULE__{} = dag) do
     Graph.vertices(dag.graph)
   end

@@ -1,5 +1,9 @@
 import Config
 
+# Global config erflow
+config :erflow,
+  dags_dir: "/Users/roi.fernandez/Courses/Elixir/erflow/dags"
+
 # Configure your database
 config :erflow, Erflow.Repo,
   username: "postgres",
